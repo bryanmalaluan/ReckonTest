@@ -18,10 +18,10 @@ import useInterval from '../hooks/useInterval';
 
 const HomeScreen = () => {
   const {stocks, logs, setStocks, setLogs} = useStockContext();
-  const {count, startInterval, stopInterval} = useInterval();
+  const {count} = useInterval();
 
   const [pauseLogs, setPauseLogs] = React.useState<boolean>(false);
-  const [hasPause, setHasPause] = React.useState<boolean>(false);
+  const [stopPrices, setStopPrices] = React.useState<boolean>(false);
 
   /**
    * fetch stocks on mount
@@ -47,6 +47,11 @@ const HomeScreen = () => {
    * push new log in logs context
    * */
   const storeLogs = (data: Array<Stock>) => {
+    /** logs has been pause, stop updating */
+    if (pauseLogs) {
+      return;
+    }
+
     const dateNow = dayjs().format('MM-DD-YYYY HH:mm:ss');
 
     const newLog = {
@@ -65,8 +70,8 @@ const HomeScreen = () => {
    * update stocks price values
    *  */
   const storeStocks = (data: Array<Stock>) => {
-    /** logs have been pause already, stop updating stock prices */
-    if (hasPause) {
+    /** stop updating stock prices if logs has been pause */
+    if (stopPrices) {
       return;
     }
 
@@ -109,15 +114,10 @@ const HomeScreen = () => {
   const onPressPause = () => {
     setPauseLogs(!pauseLogs);
 
-    /** resume interval count */
+    /** set stop prices value to true */
     if (pauseLogs) {
-      return startInterval();
+      setStopPrices(true);
     }
-
-    if (!hasPause) {
-      setHasPause(true);
-    }
-    stopInterval();
   };
 
   /** render logs in flatlist */
