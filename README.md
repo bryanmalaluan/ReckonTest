@@ -1,4 +1,4 @@
-# Reckon Technical Text by Bryan James Malaluan (07-07-2022)
+# Reckon Technical Test by Bryan James Malaluan (07-07-2022)
 
 # Setting up the app
 - yarn install
